@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% load cart %}
+{% block title %} cart {% endblock title %}
+{% block content %}
+<div class="container my-3">
+    <table>
+    <table class="table table-info text-center table-striped">
+ <tr>
+    <th>S.no.</th>
+    <th>Product name</th>
+    <th>Product image</th>
+    <th>Quantity</th>
+    <th>Price</th>
+    <th>Total price</th>
+ </tr>       
+ {% for i in cart_dtls  %}
+ <tr>
+    <td>{{forloop.counter}}</td>
+    <td>{{i.pro_name}}</td>
+    <td><img src="{{i.pro_image.url}}" alt="" width=50> </td> 
+    <td>{{i|cartquantity:request.session.cart}}</td>
+    <td>{{i.price}}</td>
+    <td>{{i|Total_price:request.session.cart}}</td>
+ </tr>
+ 
+ {% endfor %}
+ <td colspan=4 >
+    <h2>total payble amount</h2>
+</td>
+{% comment %} ctrl+alt+4= indian rupee {% endcomment %}
+<td>₹{{cart_dtls|payable_amount:request.session.cart}}</td> 
+<td><button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#checkout">checkout</button></td>
+</table>
+</table>
+
+</div>
+{% comment %} checkout model {% endcomment %}
+<div class="modal fade" id="checkout" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">checkout</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form action="{% url 'checkout' %}" method="Post">
+            {% csrf_token %}
+    <div class="mb-3">
+  <label for="formGroupExampleInput" class="form-label">Enter  Address</label>
+  <input type="text" class="form-control" name="address" id="formGroupExampleInput" placeholder="Example input placeholder">
+</div>
+<div class="mb-3">
+  <label for="formGroupExampleInput2" class="form-label">Mobile no.</label>
+  <input type="number" class="form-control"name="mobile" id="formGroupExampleInput2" >
+</div>
+<input type="submit" value="Checkout" class="btn btn-secondary">
+        </form>
+
+        
+      </div>
+      
+    </div>
+  </div>
+</div>
+
+{% endblock content %}
